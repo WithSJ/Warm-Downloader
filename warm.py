@@ -44,8 +44,11 @@ class Home(MDScreen):
 
         try:
             yt = YouTube(self.ids.video_url.text)
-            img_name = yt.video_id
+            
+            img_name = yt.video_id + ".img"
+            
             urlretrieve(yt.thumbnail_url,img_name)
+            
             return yt.title,img_name
         except:
             return "Connection Error","test.jpeg"
