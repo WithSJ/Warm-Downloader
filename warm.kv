@@ -1,0 +1,33 @@
+<Home>
+    MDTextFieldRect:
+        id: video_url
+        hint_text: "Youtube Video URL"
+        size_hint: (.8, None)
+        height: "30dp"
+        pos_hint: {"center_x":.5,"center_y":.95}
+        
+    MDRaisedButton:
+        id: warm_btn
+        text: "Warm Video"
+        pos_hint: {"center_x":.5,"center_y":.9}
+        size_hint: (.5, .04)
+        on_press: root.show_video_data()
+
+    MDBoxLayout:
+        id: video_data
+        orientation: 'vertical'
+        adaptive_height: True
+        pos_hint: {"center_x":.5,"center_y":.65}
+        size_hint: (.9,.35)
+        # md_bg_color: app.theme_cls.primary_color
+        
+        MDCard:
+            id: video_img
+            size_hint: None, None
+            size: "280dp", "180dp"
+            pos_hint: {"center_x":.5}
+            
+        MDLabel:
+            id: video_title
+            text: "Youtube"
+            halign: "center"
