@@ -7,6 +7,9 @@ Config.set("graphics","height",740)
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import BoxLayout
+from kivymd.uix.list import OneLineListItem
+
+
 from kivy.uix.image import Image
 
 from pytube import YouTube
@@ -20,7 +23,8 @@ class Home(MDScreen):
         self.current_video_data = {
             "title": None,
             "img_name": None,
-            "video_obj": None   
+            "quality_list": None,
+            "select_video": None,
         }
 
     def show_video_data(self):
@@ -29,6 +33,17 @@ class Home(MDScreen):
         """
         title = self.current_video_data.get("title")
         img = self.current_video_data.get("img_name")
+
+        # if self.current_video_data.get("quality_list"):
+        #     for quality in self.current_video_data.get("quality_list"):
+        #         print(quality.resolution)
+
+        if self.current_video_data.get("quality_list"):
+            for quality in self.current_video_data.get("quality_list"):
+                if quality.resolution != None:
+                    self.ids.quality_list.add_widget(
+                        OneLineListItem(text= quality.resolution)
+                    )
         
         self.ids.video_title.text = title
         
@@ -58,6 +73,10 @@ class Home(MDScreen):
             
             self.current_video_data["title"] = yt.title
             self.current_video_data["img_name"] = img_name
+            self.current_video_data["quality_list"] = yt.streams.filter(
+                only_video = True,
+                file_extension = "mp4"
+                )
         except:
             self.current_video_data["title"] = "Connection Error"
             self.current_video_data["img_name"] = "test.jpeg"

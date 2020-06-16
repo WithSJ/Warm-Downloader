@@ -14,13 +14,15 @@
         on_release: 
             root.get_video_data()
             root.show_video_data()
+        on_press:
+            video_title.text = "please wait..."
     MDBoxLayout:
         id: video_data
         orientation: 'vertical'
         adaptive_height: True
-        pos_hint: {"center_x":.5,"center_y":.65}
+        pos_hint: {"center_x":.5,"center_y":.67}
         size_hint: (.9,.35)
-        # md_bg_color: app.theme_cls.primary_color
+        md_bg_color: app.theme_cls.primary_color
         
         MDCard:
             id: video_img
@@ -30,5 +32,16 @@
             
         MDLabel:
             id: video_title
-            text: "Youtube"
+            text: "Warm Downloader"
             halign: "center"
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        pos_hint: {"center_x":.5,"center_y":.4}
+        size_hint: (.9,.2)
+        md_bg_color: app.theme_cls.primary_light
+
+        ScrollView:
+            MDList:
+                id: quality_list
+    
