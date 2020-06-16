@@ -11,8 +11,9 @@
         text: "Warm Video"
         pos_hint: {"center_x":.5,"center_y":.9}
         size_hint: (.5, .04)
-        on_press: root.show_video_data()
-
+        on_release: 
+            root.get_video_data()
+            root.show_video_data()
     MDBoxLayout:
         id: video_data
         orientation: 'vertical'

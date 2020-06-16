@@ -14,11 +14,22 @@ from urllib.request import urlretrieve
 import os
 
 class Home(MDScreen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        
+        self.current_video_data = {
+            "title": None,
+            "img_name": None,
+            "video_obj": None   
+        }
+
     def show_video_data(self):
         """[Show thumbnail and title of video]
             
         """
-        title,img = self.get_video_data()        
+        title = self.current_video_data.get("title")
+        img = self.current_video_data.get("img_name")
+        
         self.ids.video_title.text = title
         
 
@@ -35,22 +46,22 @@ class Home(MDScreen):
 
     
     def get_video_data(self):
-        """[Get Video data using PyTube module and
-            download thumbnail image save ad videoid]
+        """
+        Get Video data using PyTube module and
+        download thumbnail image save ad videoid
 
-        Returns:
-            [tupple]: [First is Title and second is image path]
         """
         try:
-            yt = YouTube(self.ids.video_url.text)
-            
+            yt = YouTube(self.ids.video_url.text)            
             img_name = yt.video_id + ".img"
-            
             urlretrieve(yt.thumbnail_url,img_name)
             
-            return yt.title,img_name
+            self.current_video_data["title"] = yt.title
+            self.current_video_data["img_name"] = img_name
         except:
-            return "Connection Error","test.jpeg"
+            self.current_video_data["title"] = "Connection Error"
+            self.current_video_data["img_name"] = "test.jpeg"
+
 
 
 class WarmApp(MDApp):
