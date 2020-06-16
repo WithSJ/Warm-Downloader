@@ -41,7 +41,6 @@ class Home(MDScreen):
         Returns:
             [tupple]: [First is Title and second is image path]
         """
-
         try:
             yt = YouTube(self.ids.video_url.text)
             
@@ -57,6 +56,11 @@ class Home(MDScreen):
 class WarmApp(MDApp):
     def build(self):
         return Home()
+    def on_stop(self):
+        for get_file in os.listdir():
+            if ".img" in get_file:
+                os.remove(get_file)
+        
     
 
 
