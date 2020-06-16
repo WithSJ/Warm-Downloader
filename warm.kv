@@ -16,13 +16,14 @@
             root.show_video_data()
         on_press:
             video_title.text = "please wait..."
+            # root.screen_reload()
     MDBoxLayout:
         id: video_data
         orientation: 'vertical'
         adaptive_height: True
         pos_hint: {"center_x":.5,"center_y":.67}
         size_hint: (.9,.35)
-        md_bg_color: app.theme_cls.primary_color
+        # md_bg_color: app.theme_cls.primary_color
         
         MDCard:
             id: video_img
@@ -39,9 +40,15 @@
         orientation: 'vertical'
         pos_hint: {"center_x":.5,"center_y":.4}
         size_hint: (.9,.2)
-        md_bg_color: app.theme_cls.primary_light
-
+        # md_bg_color: app.theme_cls.primary_light
+    
         ScrollView:
+            id: add_list
             MDList:
                 id: quality_list
-    
+
+    MDLabel:
+        id: select_video
+        text: ""
+        pos_hint: {"center_y":.27}
+        halign: "center"

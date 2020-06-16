@@ -7,9 +7,8 @@ Config.set("graphics","height",740)
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import BoxLayout
-from kivymd.uix.list import OneLineListItem
-
-
+from kivymd.uix.list import OneLineListItem,MDList
+from kivymd.uix.button import MDRaisedButton
 from kivy.uix.image import Image
 
 from pytube import YouTube
@@ -27,6 +26,34 @@ class Home(MDScreen):
             "select_video": None,
         }
 
+    # def screen_reload(self):
+    #     self.ids["quality_list"] = MDList()
+    #     print("hello")
+
+        
+    def select_download_quality(self,obj):
+        
+        self.ids.select_video.text = "Quality " + obj.text
+        for quality in self.current_video_data["quality_list"]:
+            if obj.text == quality.resolution:
+                self.current_video_data["select_video"]= quality
+
+        # print(self.current_video_data["select_video"])
+    
+    def download_video(self,obj):
+        self.current_video_data.get("select_video").download()
+
+    def show_download_btn(self,obj):
+        if "download_btn" not in self.ids:
+            self.ids["download_btn"] = MDRaisedButton(
+                    text= "Download Video",
+                    pos_hint= {"center_x": .5, "center_y": .21},
+                    on_release= self.download_video,
+                )
+
+            self.add_widget(self.ids.get("download_btn"))
+
+    
     def show_video_data(self):
         """[Show thumbnail and title of video]
             
@@ -34,16 +61,17 @@ class Home(MDScreen):
         title = self.current_video_data.get("title")
         img = self.current_video_data.get("img_name")
 
-        # if self.current_video_data.get("quality_list"):
-        #     for quality in self.current_video_data.get("quality_list"):
-        #         print(quality.resolution)
-
         if self.current_video_data.get("quality_list"):
             for quality in self.current_video_data.get("quality_list"):
                 if quality.resolution != None:
+                    # print(quality.resolution)
                     self.ids.quality_list.add_widget(
-                        OneLineListItem(text= quality.resolution)
-                    )
+                        OneLineListItem(
+                            text= quality.resolution,
+                            on_press= self.select_download_quality,
+                            on_release= self.show_download_btn,
+                            ))
+
         
         self.ids.video_title.text = title
         
@@ -76,6 +104,7 @@ class Home(MDScreen):
             self.current_video_data["quality_list"] = yt.streams.filter(
                 only_video = True,
                 file_extension = "mp4"
+            
                 )
         except:
             self.current_video_data["title"] = "Connection Error"
@@ -86,6 +115,7 @@ class Home(MDScreen):
 class WarmApp(MDApp):
     def build(self):
         return Home()
+
     def on_stop(self):
         for get_file in os.listdir():
             if ".img" in get_file:
