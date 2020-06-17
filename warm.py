@@ -13,7 +13,15 @@ from kivy.uix.image import Image
 
 from pytube import YouTube
 from urllib.request import urlretrieve
+from threading import Thread
 import os
+
+_Downloading_Threads = list()
+
+def Download_Video(obj):
+    obj.download()
+
+
 
 class Home(MDScreen):
     def __init__(self, **kw):
@@ -25,30 +33,32 @@ class Home(MDScreen):
             "quality_list": None,
             "select_video": None,
         }
-
-    # def screen_reload(self):
-    #     self.ids["quality_list"] = MDList()
-    #     print("hello")
-
         
     def select_download_quality(self,obj):
         
         self.ids.select_video.text = "Quality " + obj.text
         for quality in self.current_video_data["quality_list"]:
+
             if obj.text == quality.resolution:
                 self.current_video_data["select_video"]= quality
 
         # print(self.current_video_data["select_video"])
     
-    def download_video(self,obj):
-        self.current_video_data.get("select_video").download()
+    def click_download(self,obj):
+        # self.current_video_data.get("select_video").download()
+        D_TH = Thread(target=Download_Video,
+        args=(self.current_video_data.get("select_video"),))
+
+        _Downloading_Threads.append(D_TH)
+        D_TH.start()
 
     def show_download_btn(self,obj):
+        print(self.current_video_data["select_video"].filesize)
         if "download_btn" not in self.ids:
             self.ids["download_btn"] = MDRaisedButton(
                     text= "Download Video",
                     pos_hint= {"center_x": .5, "center_y": .21},
-                    on_release= self.download_video,
+                    on_release= self.click_download,
                 )
 
             self.add_widget(self.ids.get("download_btn"))
@@ -117,6 +127,8 @@ class WarmApp(MDApp):
         return Home()
 
     def on_stop(self):
+        # for D_TH in _Downloading_Threads:
+        #     D_TH.cl
         for get_file in os.listdir():
             if ".img" in get_file:
                 os.remove(get_file)
