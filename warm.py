@@ -10,6 +10,8 @@ from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.list import OneLineListItem,MDList
 from kivymd.uix.button import MDRaisedButton
 from kivy.uix.image import Image
+from kivymd.uix.progressbar import MDProgressBar
+from kivy.clock import Clock
 
 from pytube import YouTube
 from urllib.request import urlretrieve
@@ -44,6 +46,20 @@ class Home(MDScreen):
 
         # print(self.current_video_data["select_video"])
     
+    def progressbar_run(self,dt):
+        total_size= self.current_video_data.get("select_video").filesize
+        video = self.current_video_data.get("select_video")
+        current_size = os.path.getsize(
+            self.current_video_data.get("title") + "." + video.subtype
+        )
+        per = (current_size/total_size) * 100
+        self.ids.downloading.value += round(per)
+        # if per == 100:
+        #     self.ids.downloading.value=0
+            # if self.list not in self.ids.add_list:
+            #     self.ids.add_list.add_widget(
+            #         self.list)
+
     def click_download(self,obj):
         # self.current_video_data.get("select_video").download()
         D_TH = Thread(target=Download_Video,
@@ -51,9 +67,16 @@ class Home(MDScreen):
 
         _Downloading_Threads.append(D_TH)
         D_TH.start()
+        self.list = self.ids.quality_list
+        self.ids.add_list.remove_widget(
+            self.list
+        )
+
+        Clock.schedule_interval(self.progressbar_run, 0.1)
+        
+
 
     def show_download_btn(self,obj):
-        print(self.current_video_data["select_video"].filesize)
         if "download_btn" not in self.ids:
             self.ids["download_btn"] = MDRaisedButton(
                     text= "Download Video",
